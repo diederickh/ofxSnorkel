@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  * Purpose:
- *  The Snorkel API defines a set of routines designed to provide cross 
+ *  The Snorkel API defines a set of routines designed to provide cross
  *  platform embedded HTTP/HTTPS support.
  *
  * Comments:
@@ -106,7 +106,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
 #define HEAD  0x04
 #define PROTOCOL 0x08
 #define MIME  0x10
-#define URI   0x20
+//#define URI   0x20
 #define IGNORE_MIME 0xFFFF
 
 #define SNORKEL_SUCCESS			0
@@ -138,8 +138,8 @@ snorkel_make_return_value ("an unexpected condition prevents"\
     snorkel_obj_httpreq,
     snorkel_obj_buffer,         /* internal usage only */
     snorkel_obj_log,            /* creates a shared log file, a log file
-                                   that can log both application messages and API 
-                                   messages 
+                                   that can log both application messages and API
+                                   messages
 								   args: (char *)logfile */
     snorkel_obj_stream, /* args: (char *)hostname, (char *)protocol_name || (char *)0,
 						         (int)port, (int)timeout */
@@ -148,13 +148,13 @@ snorkel_make_return_value ("an unexpected condition prevents"\
     snorkel_obj_sys,
     snorkel_obj_unknown,
     snorkel_obj_worker_thread, /* arg: (int) heap_size, (int) queue_size */
-    snorkel_obj_appl_log, /* creates a log object that will not log 
+    snorkel_obj_appl_log, /* creates a log object that will not log
                              snorkel errors only messages printed by the application - entries
                              are not time stamped
 							 args: (char *)logfile */
-    snorkel_obj_appl_tstamped_log, /* same as above; however, entries are time stamped 
+    snorkel_obj_appl_tstamped_log, /* same as above; however, entries are time stamped
 								   args: (char *)logfile */
-    snorkel_obj_ssl_stream,  /* creates a simple client-ssl connection without authentication 
+    snorkel_obj_ssl_stream,  /* creates a simple client-ssl connection without authentication
 	                            args: (char *)hostname, (char *)protocol_name||(char *)0, (int)port,
 								      (int)timeout, (char *)certificate||(char *)0, (char *)key_file||(char *)0 */
   } snorkel_obj_type_t;
@@ -171,25 +171,25 @@ snorkel_make_return_value ("an unexpected condition prevents"\
        usage:
        retrieve the value of a header variable from the http request.
 
-       snorkel_obj_get (snorkel_obj_t http_request_object, 
-       snorkel_attrib_header, 
+       snorkel_obj_get (snorkel_obj_t http_request_object,
+       snorkel_attrib_header,
        char *buffer,
        size_t size_of_buffer) */
     snorkel_attrib_post,
-    /* 
+    /*
        usage:
        retrieve the value of a HTTP post variable.
 
        snorkel_obj_get (snorkel_obj_t http_request_object,
        snorkel_attrib_post,
        char *buffer,
-       size_t size_of_buffer) 
+       size_t size_of_buffer)
      */
     snorkel_attrib_mime,
     /*
        usage:
        overloads a MIME... associates a function with an extension-file type
-       for interpreting-converting the file type to a form viewable in a 
+       for interpreting-converting the file type to a form viewable in a
        browser.
 
        snorkel_obj_set (snorkel_obj_t server_object,
@@ -214,9 +214,9 @@ snorkel_make_return_value ("an unexpected condition prevents"\
      */
     snorkel_attrib_pagespan,
     /*
-       usage: 
+       usage:
        sets the life span of an http page before it must be
-       revalidated.  Used for Cache control. Note: refers client-side 
+       revalidated.  Used for Cache control. Note: refers client-side
 	   cache not server side.
 
        snorkel_obj_set (snorkel_obj_t http_request_object,
@@ -230,7 +230,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
      */
     snorkel_attrib_tcpbuffsize,
     /*
-       usage: 
+       usage:
        sets the tcp window size. note: if used, can only be used on server objects
        prior to starting the object using snorkel_obj_start.
 
@@ -314,8 +314,8 @@ snorkel_make_return_value ("an unexpected condition prevents"\
        not identify the actual location of the resource.  For example, my name
        is Walter E. Capers.  Even though it is my name it does not identify my
        location or my uniqueness -- there my be other Walter E. Capers in the world.
-       In another example, /index.html is a resource; however it is not unique. 
-       Just about every web page has an index.html file.  
+       In another example, /index.html is a resource; however it is not unique.
+       Just about every web page has an index.html file.
        url: universal resource locator, refers to the unique location of a resource.
        For example, http://walt.com/file.htm refers to a specific file identified
        by both location and name.
@@ -325,7 +325,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
        usage:
        sets a callback-overloads how a uri is processed by the server.  instead
        of looking to the file system to resolve the uri the server calls the
-       provided callback to provide the responce. note: if used, must be called 
+       provided callback to provide the responce. note: if used, must be called
        prior to starting the server.
 
        snorkel_obj_set (snorkel_obj_t server_object,
@@ -365,7 +365,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
        SNORKEL_STORE_AS_DUP each listener recieves a copy of the buffer (faster)))
      */
     snorkel_attrib_uri_path,
-    /* 
+    /*
        usage:
        retrieves the uri path-parent uri from an http_request object.
 
@@ -488,10 +488,10 @@ snorkel_make_return_value ("an unexpected condition prevents"\
      */
     snorkel_attrib_scrub_mem,
     /*
-       usage: 
+       usage:
        when thread heap storage memory is cycled identifies whether memory
        is to be swipped clean.  note: slows performance.  operates on system
-       object... use snorkel_get_sys to retrieve system object. 
+       object... use snorkel_get_sys to retrieve system object.
 
        snorkel_obj_set (snorkel_obj_t system_object,
        snorkel_attrib_scrub_mem,
@@ -509,7 +509,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
        int minimum_size_in_bytes)
      */
     snorkel_attrib_file_info_refresh,
-    /* 
+    /*
        usage:
        describes the frequency in seconds for which the server will check for changes in
        a files status.  Higher values improve overall performance.  Use higher values when
@@ -520,10 +520,10 @@ snorkel_make_return_value ("an unexpected condition prevents"\
        int time_in_seconds)
      */
     snorkel_attrib_secure_children,
-    /* 
+    /*
        usage:
        specifies whether sub-directories of a restricted directory inherit the restrictions of the parent
-       directory when an .htaccess file is not present in the subdirectory. note: can affect performance 
+       directory when an .htaccess file is not present in the subdirectory. note: can affect performance
        with deep tree structures. (default disabled)
 
        snorkel_obj_set (snorkel_obj_t system_object,
@@ -546,7 +546,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
     snorkel_attrib_get_ipaddr,
        /*
          usage:
-          retrieve the ip address of the connected system -- the system on the other end 
+          retrieve the ip address of the connected system -- the system on the other end
           of the connection.
 
           snorkel_obj_get (snorkel_obj_t stream,
@@ -565,7 +565,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
 						   int enabled=1|disabled=0)
 		*/
 	snorkel_attrib_ssl_cypher_list,
-	    /* 
+	    /*
 		   usage:
 		    changes the SSL cypher list from the default ""AES:ALL:!aNULL:!eNULL:+RC4:@STRENGTH"
 			to a user specified value
@@ -573,25 +573,25 @@ snorkel_make_return_value ("an unexpected condition prevents"\
 			                 snorkel_attrib_ssl_cypher_list,
 							 char *list)
 			note: only supported for SSL enabled runtime... also can only be set once per execution
-			instance 
+			instance
 		*/
 #define AUTH_METHOD_DIGEST 0x01  /* MD5 METHOD */
 #define AUTH_METHOD_BASIC  0x02  /* Base 64 encoded method */
 	snorkel_attrib_auth_method,
-	    /* 
+	    /*
 		  usage:
 		    set the http authentication method: AUTH_METHOD_BASIC for basic or AUTH_METHOD_DIGEST for DIGEST
-			snorkel_obj_set (snorkel_obj_t sys, 
-			                 snorkel_attrib_auth_method, 
+			snorkel_obj_set (snorkel_obj_t sys,
+			                 snorkel_attrib_auth_method,
 							 AUTH_METHOD_DIGEST || AUTH_METHOD_BASIC)
 
 			note: AUTH_METHOD_DIGEST, the securer of the two is the default.
 		*/
 	snorkel_attrib_http_realm,
-	    /* 
+	    /*
 		   usage:
 		     instructs client on which set of passwords to use...  defines their realm.
-			 snorkel_obj_set (snorkel_obj_t sys, 
+			 snorkel_obj_set (snorkel_obj_t sys,
 			                  snorkel_attrib_http_realm,
 							  char *realm_name)
 			note: realm_name can include spaces.
@@ -599,7 +599,7 @@ snorkel_make_return_value ("an unexpected condition prevents"\
 	snorkel_attrib_http_user,
 	    /*
 		  usage: edits an htaccess files
-		  snorkel_obj_set (snorkel_obj_t sys, 
+		  snorkel_obj_set (snorkel_obj_t sys,
 		                   snorkel_attrib_http_user,
 						   char *haccess_file,
 						   char *username,
@@ -612,10 +612,10 @@ snorkel_make_return_value ("an unexpected condition prevents"\
 #define RESTRICT_PORT         0x04
 	snorkel_attrib_uri_access,
 	/*
-	   usage: controls access type for a particular uri.  if access is HTTPS_READ only 
+	   usage: controls access type for a particular uri.  if access is HTTPS_READ only
 	   ports that use HTTPS can be used to access the associated resource. access can
 	   be either HTTPS_READ,HTTP_READ, or HTTPS_READ|HTTP_READ.
-	   snorkel_obj_set (snorkel_obj_t server_object, 
+	   snorkel_obj_set (snorkel_obj_t server_object,
 	                    snorkel_attrib_uri_access,
 	                    char *uri,
 						int access)
@@ -674,7 +674,7 @@ typedef struct
   snorkel_obj_t __declspec (dllimport)
     snorkel_get_sys ();
 
-  lpchar_t __declspec (dllimport) 
+  lpchar_t __declspec (dllimport)
 	  snorkel_time_to_metric_time(time_t, char *, size_t, int);
 
  int __declspec (dllimport)
