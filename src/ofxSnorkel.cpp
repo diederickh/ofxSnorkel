@@ -1,9 +1,9 @@
 #include "ofxSnorkel.h"
-
+#include "ofxLog.h"
 ofxSnorkel ofxSnorkel::instance;
 
 ofxSnorkel::ofxSnorkel() {
-	std::cout << "ofxSnorkel()" << std::endl;
+	OFXLOG("ofxSnorkel::ofxSnorkel()");
 }
 
 ofxSnorkel* ofxSnorkel::getInstance() {
@@ -14,7 +14,7 @@ ofxSnorkel* ofxSnorkel::getInstance() {
 // after the call to"snorkel_obj_set(http, snorkel_attrib_ipvers, IPVERS_IPV4, SOCK_SET)"
 bool ofxSnorkel::setup(int nPort, std::string sDocRoot) {
 	if(snorkel_init() != SNORKEL_SUCCESS) {
-		std::cout << "ofxSnorkel: Error initializing sorkel";
+		OFXLOG("ofxSnorkel: ERROR: initializing sorkel");
 		return false;
 	}
 
@@ -25,46 +25,27 @@ bool ofxSnorkel::setup(int nPort, std::string sDocRoot) {
 	// create with doc root (when incorrect dir given; this will crash!
 	http = snorkel_obj_create(snorkel_obj_server,2,sDocRoot.c_str());
 	if(!http) {
-		std::cout << "Error creating http object: "  <<std::endl;
+		OFXLOG("ofxSnorkel: ERROR: creating http object. ");
 	}
 
 	// start listening on port XX
 	if(snorkel_obj_set(http, snorkel_attrib_listener, nPort ,0) != SNORKEL_SUCCESS) {
-		std::cout << "ofxSnorkel: Error binding http object on port: " << nPort <<std::endl;
+		OFXLOG("ofxSnorkel: ERROR: binding http object on port: " << nPort);
 		snorkel_obj_destroy(http);
 		return false;
 	}
-
-/* TEST
-	if(snorkel_obj_set(
-					http
-					,snorkel_attrib_uri
-					,GET
-					,"/index.html"
-					,encodingtype_text
-					,call_cb) != SNORKEL_SUCCESS)
-	{
-		perror("callback not working!");
-		//std::cout << "Test callback not working." << std::endl;
-	}
-	else {
-		std::cout << "Callback WORKS!!!" << std::endl;
-	}
-	//
-*/
-
 	return true;
 }
 bool ofxSnorkel::start() {
 	// start ip_v4
 	if(snorkel_obj_set(http, snorkel_attrib_ipvers, IPVERS_IPV4, SOCK_SET) != SNORKEL_SUCCESS) {
-		std::cout << "ofxSnorkel: Error setting IP to v4 " <<std::endl;
+		OFXLOG("ofxSnorkel: Error setting IP to v4 ");
 		return false;
 	}
 
 	// start the http server
 	if(snorkel_obj_start(http) != SNORKEL_SUCCESS) {
-		std::cout << "ofxSnorkel: Cannot start snorkel http server " <<std::endl;
+		OFXLOG("ofxSnorkel: Cannot start snorkel http server ");
 		snorkel_obj_destroy(http);
 		return false;
 	}
@@ -81,7 +62,7 @@ bool ofxSnorkel::addURICallback(std::string sURI, ofxSnorkelCallback* pCallback,
 	}
 	else {
 		call->push_back(pCallback);
-		std::cout << "ofxSnorkel: number of callbacks:" << call->size() << std::endl;
+        OFXLOG("ofxSnorkel: number of callbacks:" << call->size());
 	}
 
 	// request for a uri callback on snorkel.
@@ -93,7 +74,7 @@ bool ofxSnorkel::addURICallback(std::string sURI, ofxSnorkelCallback* pCallback,
 					,nEncodingType
 					,ofxSnorkel::snorkelURICallback) != SNORKEL_SUCCESS)
 	{
-		std::cout << "ofxSnorkel: Error, cannot set callbackhandler for: " << sURI << std::endl;
+		OFXLOG("ofxSnorkel: Error, cannot set callback handler for: " << sURI);
 		return false;
 	}
 	return true;
@@ -102,17 +83,17 @@ bool ofxSnorkel::addURICallback(std::string sURI, ofxSnorkelCallback* pCallback,
 std::vector<ofxSnorkelCallback*>* ofxSnorkel::getCallbacks(std::string sURI) {
 	std::map<std::string, std::vector<ofxSnorkelCallback*>* >::iterator it = callbacks.find(sURI);
 	if(it == callbacks.end()) {
-		std::cout << "ofxSnorkel: not yet a callback added for: " << sURI << std::endl;
+		OFXLOG("ofxSnorkel: not yet a callback added for: " << sURI);
 		return NULL;
 	}
 	return (it->second);
 }
 
 void ofxSnorkel::handleURICallback(std::string sURI, snorkel_obj_t oHTTP, snorkel_obj_t oOutputStream) {
-	std::cout << "ofxSnorkel: handling an uri callback for: " << sURI << std::endl;
+	OFXLOG("ofxSnorkel: handling an uri callback for: " << sURI);
 	std::vector<ofxSnorkelCallback*>* uri_callbacks = getCallbacks(sURI);
 	if(uri_callbacks == NULL) {
-		std::cout << "ofxSnorkel: error, no callbacks found for the uri: " << sURI << std::endl;
+		OFXLOG("ofxSnorkel: error, no callbacks found for the uri: " << sURI);
 		return;
 	}
 	std::vector<ofxSnorkelCallback*>::iterator it = uri_callbacks->begin();
@@ -122,18 +103,14 @@ void ofxSnorkel::handleURICallback(std::string sURI, snorkel_obj_t oHTTP, snorke
 			(*it)->execute(&response);
 		}
 		else {
-			std::cout << "hmm NULL? " << std::endl;
+			OFXLOG("ofxSnorkel: error while executing a callback... ");
 		}
  		++it;
 	}
-	std::cout << "Execute callbacks" << std::endl;
 }
 
 call_status_t ofxSnorkel::snorkelURICallback(snorkel_obj_t oHTTP, snorkel_obj_t oOutputStream) {
-	//snorkel_printf(oOutputStream, "<html><body>test</body></html>\r\n");
-
-
-
+    OFXLOG("ofxSnorkel::snorkelURICallback()");
 	char uri_val[1024];
 	snorkel_obj_get(oHTTP, snorkel_attrib_uri,uri_val, 1024);
 	ofxSnorkel* snorkel = ofxSnorkel::getInstance();

@@ -1,10 +1,11 @@
 #include "ofxSnorkelResponse.h"
+#include "ofxLog.h"
 
 ofxSnorkelResponse::ofxSnorkelResponse(snorkel_obj_t oHTTP, snorkel_obj_t oOutputStream)
 :http(oHTTP)
 ,output_stream(oOutputStream)
 {
-	std::cout << "ofxSnorkelResponse() " << std::endl;
+    OFXLOG("ofxSnorkelResponse() ");
 }
 
 std::string ofxSnorkelResponse::getParameter(std::string sName) {
@@ -15,11 +16,12 @@ std::string ofxSnorkelResponse::getParameter(std::string sName) {
 }
 
 bool ofxSnorkelResponse::sendFile(std::string sFile) {
-	std::cout << "SEND FILE: " << sFile << std::endl;
+	OFXLOG("ofxSnorkelResponse::sendFile(): - begin, file=" << sFile);
 	std::vector<char> writable(sFile.size() + 1);
 	std::copy(sFile.begin(), sFile.end(), writable.begin());
 	//snorkel_file_stream(output_stream, &writable[0],0,SNORKEL_USE_SENDFILE);
 	snorkel_file_stream(output_stream, &writable[0],0,SNORKEL_FILE_SEND);
+	OFXLOG("ofxSnorkelResponse::sendFile() - done, file=" << sFile);
 	return true;
 	//snorkel_obj_set(output_stream, snorkel_attrib_header,"Content-Type","image/jpeg");
 }
